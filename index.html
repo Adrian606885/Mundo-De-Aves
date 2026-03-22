@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mundo De Aves</title>
+  <style>
+    :root{
+      --bg:#f4f7f8;
+      --card:#ffffff;
+      --line:#dbe3e6;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --brand:#0f766e;
+      --brand-dark:#115e59;
+      --home:#0ea5e9;
+      --red:#b91c1c;
+      --red-bg:#fee2e2;
+      --purple:#6d28d9;
+      --purple-bg:#ede9fe;
+      --green:#166534;
+      --green-bg:#dcfce7;
+      --yellow:#92400e;
+      --yellow-bg:#fef3c7;
+      --gray-bg:#eef2f7;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius:18px;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px;
+      padding-bottom: 100px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(180deg, var(--brand), var(--brand-dark));
+      color: white;
+      padding: 16px;
+      margin: 0 -16px 18px -16px;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      opacity: .95;
+      margin-top: 4px;
+    }
+
+    .tabs {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .tab {
+      border:none;
+      background:rgba(255,255,255,.18);
+      color:white;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+      min-height: 44px;
+    }
+
+    .tab.active {
+      background:white;
+      color:var(--brand-dark);
+    }
+
+    .tab.home-active {
+      background: var(--home);
+      color:white;
+    }
+
+    .screen { display:none; }
+    .screen.active { display:block; }
+
+    .card {
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      margin-bottom:14px;
+      box-shadow:var(--shadow);
+    }
+
+    h2,h3 { margin:0 0 12px 0; }
+
+    .en {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .es {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+      line-height: 1.1;
+    }
+
+    .muted { color:var(--muted); }
+
+    .row {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+
+    .row-3 {
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:12px;
+    }
+
+    .field { margin-bottom:12px; }
+
+    label {
+      display:block;
+      margin-bottom:6px;
+      color:var(--muted);
+    }
+
+    .label-en {
+      font-size:13px;
+      font-weight:800;
+      line-height:1.1;
+    }
+
+    .label-es {
+      font-size:10px;
+      line-height:1.1;
+      margin-top:2px;
+    }
+
+    input, select, textarea {
+      width:100%;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      font-size:16px;
+      background:white;
+    }
+
+    input.big-input {
+      font-size:26px;
+      font-weight:800;
+      text-align:center;
+      min-height:64px;
+    }
+
+    textarea {
+      min-height:90px;
+      resize:vertical;
+    }
+
+    .btn {
+      border:none;
+      border-radius:14px;
+      padding:13px 16px;
+      font-weight:800;
+      cursor:pointer;
+      background:var(--brand);
+      color:white;
+      min-height:46px;
+      font-size:15px;
+    }
+
+    .btn.secondary {
+      background:#e5e7eb;
+      color:#111827;
+    }
+
+    .btn.red {
+      background:var(--red);
+      color:white;
+    }
+
+    .btn.purple {
+      background:var(--purple);
+      color:white;
+    }
+
+    .btn.home {
+      background:var(--home);
+      color:white;
+    }
+
+    .btn-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .number-grid {
+      display:grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap:8px;
+    }
+
+    .num-btn {
+      border:1px solid var(--line);
+      background:white;
+      border-radius:14px;
+      padding:14px 0;
+      font-size:18px;
+      font-weight:900;
+      cursor:pointer;
+      min-height:52px;
+    }
+
+    .num-btn.selected {
+      background:var(--brand);
+      color:white;
+      border-color:var(--brand);
+    }
+
+    .num-btn.disabled {
+      background:#f3f4f6;
+      color:#9ca3af;
+      cursor:not-allowed;
+    }
+
+    .pill {
+      display:inline-block;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      margin-right:6px;
+      margin-bottom:6px;
+    }
+
+    .pill.green { background:var(--green-bg); color:var(--green); }
+    .pill.red { background:var(--red-bg); color:var(--red); }
+    .pill.purple { background:var(--purple-bg); color:var(--purple); }
+    .pill.yellow { background:var(--yellow-bg); color:var(--yellow); }
+    .pill.gray { background:var(--gray-bg); color:#475569; }
+
+    .alert {
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:800;
+      margin-top:10px;
+    }
+
+    .alert.red { background:var(--red-bg); color:var(--red); }
+    .alert.purple { background:var(--purple-bg); color:var(--purple); }
+    .alert.green { background:#ecfeff; color:#155e75; }
+    .alert.yellow { background:var(--yellow-bg); color:var(--yellow); }
+
+    .kpis {
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+
+    .kpi {
+      background:white;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .kpi .label {
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .kpi .value {
+      font-size:28px;
+      font-weight:900;
+      margin-top:5px;
+    }
+
+    .report-box {
+      background:#f8fafc;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      margin-top:12px;
+    }
+
+    .report-title {
+      font-size:15px;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    .report-grid {
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:10px;
+    }
+
+    .report-item {
+      background:white;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+    }
+
+    .report-item .label {
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .report-item .value {
+      font-size:16px;
+      font-weight:900;
+      word-break: break-word;
+    }
+
+    .nest {
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:12px;
+      background:white;
+    }
+
+    .nest.red {
+      border:2px solid var(--red);
+      background:#fff6f6;
+    }
+
+    .nest.purple {
+      border:2px solid var(--purple);
+      background:#faf5ff;
+    }
+
+    .nest-head {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:8px;
+    }
+
+    .nest-title {
+      font-size:22px;
+      font-weight:900;
+    }
+
+    .metrics {
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .metric {
+      background:#f8fafc;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+    }
+
+    .metric .label {
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .metric .value {
+      font-size:24px;
+      font-weight:900;
+    }
+
+    .summary-mode {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .mode-btn {
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:900;
+      cursor:pointer;
+      background:#e5e7eb;
+      color:#111827;
+    }
+
+    .mode-btn.active {
+      background:var(--brand);
+      color:white;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+      margin-top:12px;
+    }
+
+    th, td {
+      padding:8px 6px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+
+    .quick-confirm {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 24px;
+      background: var(--brand-dark);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      font-weight: 900;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .15s ease;
+    }
+
+    .quick-confirm.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 760px) {
+      .row, .row-3, .kpis, .metrics, .report-grid { grid-template-columns:1fr; }
+      .number-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">Mundo De Aves</div>
+      <div class="subtitle" id="pageSubtitle">Home</div>
+      <div class="tabs">
+        <button class="tab active home-active" data-screen="home">Home</button>
+        <button class="tab" data-screen="weekly">Weekly Check</button>
+        <button class="tab" data-screen="takeout">Take Out</button>
+        <button class="tab" data-screen="nestinfo">Nest Info</button>
+        <button class="tab" data-screen="newnest">New Nest</button>
+        <button class="tab" data-screen="editnest">Edit Nest</button>
+      </div>
+    </div>
+
+    <div id="home" class="screen active"></div>
+    <div id="weekly" class="screen"></div>
+    <div id="takeout" class="screen"></div>
+    <div id="nestinfo" class="screen"></div>
+    <div id="newnest" class="screen"></div>
+    <div id="editnest" class="screen"></div>
+  </div>
+
+  <div id="quickConfirm" class="quick-confirm">Saved</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDb_9Rgn567Mpvklyq1YMkOV6rE01AXEY8",
+      authDomain: "mundo-de-aves.firebaseapp.com",
+      projectId: "mundo-de-aves",
+      storageBucket: "mundo-de-aves.firebasestorage.app",
+      messagingSenderId: "407663527000",
+      appId: "1:407663527000:web:b26cf9bca92a0ea51e762d",
+      measurementId: "G-D52BG9VNYY"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function testFirebase() {
+      try {
+        await setDoc(doc(db, "test", "connection"), {
+          message: "Firebase is working",
+          checkedAt: new Date().toISOString()
+        });
+        console.log("Firebase connected");
+      } catch (error) {
+        console.error("Firebase connection failed:", error);
+        alert("Firebase connection failed. Open the browser console to see the error.");
+      }
+    }
+
+    testFirebase();
+
+    const STORAGE_KEY = "mundo_de_aves_final_v1";
+
+    function deepCopy(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    const defaultState = {
+      homeMode: "weekly",
+      nests: [
+        {
+          nestNumber: "430",
+          datePaired: "2025-08-18",
+          maleId: "M-430-A",
+          femaleId: "F-430-A",
+          malePresent: true,
+          femalePresent: true,
+          currentEggs: 0,
+          currentChicks: 0,
+          totalTakenOut: 9,
+          overrideKeep: false,
+          history: [
+            { type: "takeout", date: "2026-01-14", beforeChicks: 3, takenOut: 3, afterChicks: 0, note: "" },
+            { type: "takeout", date: "2026-02-20", beforeChicks: 3, takenOut: 3, afterChicks: 0, note: "" },
+            { type: "takeout", date: "2026-03-12", beforeChicks: 3, takenOut: 3, afterChicks: 0, note: "" }
+          ]
+        },
+        {
+          nestNumber: "578",
+          datePaired: "2026-01-10",
+          maleId: "M-578-A",
+          femaleId: "F-578-A",
+          malePresent: true,
+          femalePresent: true,
+          currentEggs: 3,
+          currentChicks: 2,
+          totalTakenOut: 0,
+          overrideKeep: false,
+          history: [
+            { type: "weekly", date: "2026-02-28", eggs: 6, chicks: 0, malePresent: true, femalePresent: true, calculations: { eggsStayed: 0, eggsHatched: 0, eggsLost: 0, newEggsAdded: 6, chicksLost: 0 } },
+            { type: "weekly", date: "2026-03-07", eggs: 3, chicks: 2, malePresent: true, femalePresent: true, calculations: { eggsStayed: 3, eggsHatched: 2, eggsLost: 1, newEggsAdded: 0, chicksLost: 0 } }
+          ]
+        },
+        {
+          nestNumber: "612",
+          datePaired: "2025-12-02",
+          maleId: "M-612-A",
+          femaleId: "F-612-A",
+          malePresent: true,
+          femalePresent: true,
+          currentEggs: 1,
+          currentChicks: 3,
+          totalTakenOut: 4,
+          overrideKeep: false,
+          history: [
+            { type: "weekly", date: "2026-03-07", eggs: 2, chicks: 7, malePresent: true, femalePresent: true, calculations: { eggsStayed: 0, eggsHatched: 0, eggsLost: 0, newEggsAdded: 2, chicksLost: 0 } },
+            { type: "takeout", date: "2026-03-10", beforeChicks: 7, takenOut: 4, afterChicks: 3, note: "" }
+          ]
+        },
+        {
+          nestNumber: "701",
+          datePaired: "2026-02-05",
+          maleId: "M-701-A",
+          femaleId: "F-701-A",
+          malePresent: false,
+          femalePresent: true,
+          currentEggs: 5,
+          currentChicks: 1,
+          totalTakenOut: 0,
+          overrideKeep: false,
+          history: [
+            { type: "weekly", date: "2026-03-14", eggs: 5, chicks: 1, malePresent: false, femalePresent: true, calculations: { eggsStayed: 0, eggsHatched: 0, eggsLost: 0, newEggsAdded: 5, chicksLost: 0 } }
+          ]
+        }
+      ]
+    };
+
+    let state = loadState();
+
+    let weeklyEggsSelected = 0;
+    let weeklyChicksSelected = 0;
+    let takeoutSelected = 0;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return deepCopy(defaultState);
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.nests)) return deepCopy(defaultState);
+        if (!parsed.homeMode) parsed.homeMode = "weekly";
+        return parsed;
+      } catch (e) {
+        return deepCopy(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function n(value) {
+      const x = Number(value);
+      return Number.isFinite(x) ? x : 0;
+    }
+
+    function todayString() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function sortByNest(a, b) {
+      return a.nestNumber.localeCompare(b.nestNumber, undefined, { numeric: true });
+    }
+
+    function getNestByNumber(nestNumber) {
+      return state.nests.find(x => x.nestNumber === nestNumber);
+    }
+
+    function getWeeklyEvents(nest) {
+      return nest.history.filter(h => h.type === "weekly").sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    function getTakeoutEvents(nest) {
+      return nest.history.filter(h => h.type === "takeout").sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    function getLatestWeekly(nest) {
+      const events = getWeeklyEvents(nest);
+      return events.length ? events[events.length - 1] : null;
+    }
+
+    function getWeeksActive(nest) {
+      const weeklyCount = getWeeklyEvents(nest).length;
+      return weeklyCount > 0 ? weeklyCount : 1;
+    }
+
+    function getMonthlyAverage(nest) {
+      const takeouts = getTakeoutEvents(nest);
+      if (!takeouts.length) return 0;
+      const months = new Set(takeouts.map(x => x.date.slice(0,7)));
+      return n(nest.totalTakenOut) / Math.max(1, months.size);
+    }
+
+    function getYearlyAverage(nest) {
+      const takeouts = getTakeoutEvents(nest);
+      if (!takeouts.length) return 0;
+      const years = new Set(takeouts.map(x => x.date.slice(0,4)));
+      return n(nest.totalTakenOut) / Math.max(1, years.size);
+    }
+
+    function getAvgWeeklyProduction(nest) {
+      return n(nest.totalTakenOut) / getWeeksActive(nest);
+    }
+
+    function isRed(nest) {
+      return !nest.malePresent || !nest.femalePresent;
+    }
+
+    function isPurple(nest) {
+      const last3 = getTakeoutEvents(nest).slice(-3);
+      return last3.length === 3 && last3.every(x => n(x.takenOut) <= 3);
+    }
+
+    function isLowLast3(nest) {
+      const last3 = getTakeoutEvents(nest).slice(-3);
+      return last3.length === 3 && last3.every(x => n(x.takenOut) < 5);
+    }
+
+    function getStatus(nest) {
+      if (isRed(nest)) return "red";
+      if (isPurple(nest)) return "purple";
+      return "green";
+    }
+
+    function totalEggsNow() {
+      return state.nests.reduce((sum, nest) => sum + n(nest.currentEggs), 0);
+    }
+
+    function totalChicksNow() {
+      return state.nests.reduce((sum, nest) => sum + n(nest.currentChicks), 0);
+    }
+
+    function totalTakenOutAll() {
+      return state.nests.reduce((sum, nest) => sum + n(nest.totalTakenOut), 0);
+    }
+
+    function totalRedNests() {
+      return state.nests.filter(isRed).length;
+    }
+
+    function totalPurpleNests() {
+      return state.nests.filter(isPurple).length;
+    }
+
+    function overallAvgWeekly() {
+      const weeks = state.nests.reduce((sum, nest) => sum + getWeeksActive(nest), 0) || 1;
+      return totalTakenOutAll() / weeks;
+    }
+
+    function totalForMode(mode) {
+      if (mode === "weekly") {
+        return state.nests.reduce((sum, nest) => {
+          const last = getTakeoutEvents(nest).slice(-1)[0];
+          return sum + (last ? n(last.takenOut) : 0);
+        }, 0);
+      }
+      if (mode === "monthly") {
+        const currentMonth = todayString().slice(0,7);
+        return state.nests.reduce((sum, nest) => {
+          return sum + getTakeoutEvents(nest)
+            .filter(x => x.date.slice(0,7) === currentMonth)
+            .reduce((s,x) => s + n(x.takenOut), 0);
+        }, 0);
+      }
+      const currentYear = todayString().slice(0,4);
+      return state.nests.reduce((sum, nest) => {
+        return sum + getTakeoutEvents(nest)
+          .filter(x => x.date.slice(0,4) === currentYear)
+          .reduce((s,x) => s + n(x.takenOut), 0);
+      }, 0);
+    }
+
+    function calcWeeklyChange(previousWeekly, newEggs, newChicks) {
+      if (!previousWeekly) {
+        return {
+          eggsStayed: 0,
+          eggsHatched: 0,
+          eggsLost: 0,
+          newEggsAdded: newEggs,
+          chicksLost: 0
+        };
+      }
+
+      const prevEggs = n(previousWeekly.eggs);
+      const prevChicks = n(previousWeekly.chicks);
+
+      const chickIncrease = Math.max(0, newChicks - prevChicks);
+      const eggsStayed = Math.min(prevEggs, newEggs);
+      const eggsAvailableToDisappear = Math.max(0, prevEggs - eggsStayed);
+      const eggsHatched = Math.min(eggsAvailableToDisappear, chickIncrease);
+      const eggsLost = Math.max(0, eggsAvailableToDisappear - eggsHatched);
+      const newEggsAdded = Math.max(0, newEggs - eggsStayed);
+      const chicksLost = Math.max(0, prevChicks - newChicks);
+
+      return {
+        eggsStayed,
+        eggsHatched,
+        eggsLost,
+        newEggsAdded,
+        chicksLost
+      };
+    }
+
+    function buildNumberGrid(containerId, selectedValue, clickHandler, maxEnabled) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = "";
+
+      for (let i = 0; i <= 15; i++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "num-btn" + (i === selectedValue ? " selected" : "");
+        btn.textContent = String(i);
+
+        const disabled = typeof maxEnabled === "number" && i > maxEnabled;
+        if (disabled) {
+          btn.classList.add("disabled");
+        } else {
+          btn.addEventListener("click", function () {
+            clickHandler(i);
+          });
+        }
+        container.appendChild(btn);
+      }
+    }
+
+    function vibrateShort() {
+      if (navigator.vibrate) navigator.vibrate(80);
+    }
+
+    function showQuickConfirm(text) {
+      const el = document.getElementById("quickConfirm");
+      el.textContent = text;
+      el.classList.add("show");
+      setTimeout(() => {
+        el.classList.remove("show");
+      }, 500);
+    }
+
+    function setPage(title, screenId) {
+      document.getElementById("pageSubtitle").textContent = title;
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".tab").forEach(t => {
+        t.classList.remove("active");
+        t.classList.remove("home-active");
+      });
+      document.getElementById(screenId).classList.add("active");
+      const tab = document.querySelector('.tab[data-screen="' + screenId + '"]');
+      tab.classList.add("active");
+      if (screenId === "home") tab.classList.add("home-active");
+    }
+
+    function makeSectionTitle(en, es) {
+      return `<div class="en">${en}</div><div class="es">${es}</div>`;
+    }
+
+    function labelHtml(en, es) {
+      return `<div class="label-en">${en}</div><div class="label-es">${es}</div>`;
+    }
+
+    function nestTopReport(nest, extraMessage) {
+      return `
+        <div class="report-box">
+          <div class="report-title">Nest Report</div>
+          <div class="report-grid">
+            <div class="report-item"><div class="label">Nest Number</div><div class="value">${nest.nestNumber}</div></div>
+            <div class="report-item"><div class="label">Date of Pairing</div><div class="value">${nest.datePaired || "-"}</div></div>
+            <div class="report-item"><div class="label">Male ID</div><div class="value">${nest.maleId || "-"}</div></div>
+            <div class="report-item"><div class="label">Female ID</div><div class="value">${nest.femaleId || "-"}</div></div>
+            <div class="report-item"><div class="label">Current Eggs</div><div class="value">${nest.currentEggs}</div></div>
+            <div class="report-item"><div class="label">Current Chicks</div><div class="value">${nest.currentChicks}</div></div>
+          </div>
+          ${isRed(nest) ? `<div class="alert red">Missing parent: ${!nest.malePresent && !nest.femalePresent ? "male and female" : !nest.malePresent ? "male" : "female"}.</div>` : ``}
+          ${isPurple(nest) ? `<div class="alert purple">This nest is purple because the last 3 take-out events were 3 or lower.</div>` : ``}
+          ${extraMessage ? `<div class="alert yellow">${extraMessage}</div>` : ``}
+        </div>
+      `;
+    }
+
+    function renderHome() {
+      const home = document.getElementById("home");
+      const mode = state.homeMode;
+
+      home.innerHTML = `
+        <div class="card">
+          ${makeSectionTitle("Barn Summary", "Resumen del galpón")}
+
+          <div class="summary-mode" style="margin-top:12px;">
+            <button class="mode-btn ${mode === "weekly" ? "active" : ""}" data-mode="weekly">Weekly</button>
+            <button class="mode-btn ${mode === "monthly" ? "active" : ""}" data-mode="monthly">Monthly</button>
+            <button class="mode-btn ${mode === "yearly" ? "active" : ""}" data-mode="yearly">Yearly</button>
+          </div>
+
+          <div class="kpis" style="margin-top:14px;">
+            <div class="kpi">
+              <div class="label">Average Production of Nest</div>
+              <div class="value">${overallAvgWeekly().toFixed(2)}</div>
+            </div>
+            <div class="kpi">
+              <div class="label">Total Production (${mode})</div>
+              <div class="value">${totalForMode(mode)}</div>
+            </div>
+            <div class="kpi">
+              <div class="label">Active Nests</div>
+              <div class="value">${state.nests.length}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          ${makeSectionTitle("Main Warnings", "Avisos principales")}
+          <div class="muted" style="margin-top:10px;">Only missing-parent nests and nests with low production in the last 3 take-out events appear here.</div>
+
+          <div style="margin-top:12px;">
+            ${state.nests.filter(isRed).length
+              ? state.nests.filter(isRed).map(nest => `
+                <div class="alert red">Nest ${nest.nestNumber}: missing ${!nest.malePresent && !nest.femalePresent ? "male and female" : !nest.malePresent ? "male" : "female"}.</div>
+              `).join("")
+              : `<div class="alert green">No nests with missing parents.</div>`
+            }
+          </div>
+
+          <div style="margin-top:12px;">
+            ${state.nests.filter(nest => isLowLast3(nest)).length
+              ? state.nests.filter(nest => isLowLast3(nest)).map(nest => `
+                <div class="alert ${isPurple(nest) ? "purple" : "yellow"}">
+                  Nest ${nest.nestNumber}: low production in the last 3 take-out events.
+                  ${isPurple(nest) ? " This nest is purple because all last 3 were 3 or lower." : ""}
+                </div>
+              `).join("")
+              : `<div class="alert green">No low-production nests in the last 3 take-out events.</div>`
+            }
+          </div>
+        </div>
+      `;
+
+      home.querySelectorAll(".mode-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+          state.homeMode = btn.getAttribute("data-mode");
+          saveState();
+          renderHome();
+        });
+      });
+    }
+
+    function renderWeekly() {
+      const weekly = document.getElementById("weekly");
+      weekly.innerHTML = `
+        <div class="card">
+          ${makeSectionTitle("Enter Nest Number", "Número de nido")}
+          <div class="field" style="margin-top:12px;">
+            <input id="weeklyNestNumber" class="big-input" inputmode="numeric" placeholder="Type nest number">
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="weeklyEnterBtn">Enter</button>
+          </div>
+        </div>
+
+        <div id="weeklyLoadedArea"></div>
+      `;
+
+      const input = document.getElementById("weeklyNestNumber");
+      input.focus();
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") loadWeeklyNest();
+      });
+      document.getElementById("weeklyEnterBtn").addEventListener("click", loadWeeklyNest);
+    }
+
+    function loadWeeklyNest() {
+      const nestNumber = document.getElementById("weeklyNestNumber").value.trim();
+      if (!nestNumber) return alert("Enter a nest number.");
+
+      const nest = getNestByNumber(nestNumber);
+      const area = document.getElementById("weeklyLoadedArea");
+
+      if (!nest) {
+        area.innerHTML = `<div class="card"><div class="alert red">Nest not found. Go to New Nest.</div></div>`;
+        return;
+      }
+
+      weeklyEggsSelected = nest.currentEggs;
+      weeklyChicksSelected = nest.currentChicks;
+
+      area.innerHTML = `
+        <div class="card">
+          ${nestTopReport(nest, "If a mistake is found here, go to Edit Nest.")}
+          <div class="report-box">
+            <div class="report-title">Weekly Fill Out</div>
+
+            <div class="field">
+              <label>${labelHtml("Eggs", "Huevos")}</label>
+              <div id="weeklyEggsGrid" class="number-grid"></div>
+            </div>
+
+            <div class="field">
+              <label>${labelHtml("Chicks", "Pollitos")}</label>
+              <div id="weeklyChicksGrid" class="number-grid"></div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn" id="weeklySubmitBtn">Submit</button>
+            </div>
+          </div>
+          <div id="weeklyResultArea"></div>
+        </div>
+      `;
+
+      const redraw = () => {
+        buildNumberGrid("weeklyEggsGrid", weeklyEggsSelected, function (value) {
+          weeklyEggsSelected = value;
+          redraw();
+        }, 15);
+
+        buildNumberGrid("weeklyChicksGrid", weeklyChicksSelected, function (value) {
+          weeklyChicksSelected = value;
+          redraw();
+        }, 15);
+      };
+
+      redraw();
+
+      document.getElementById("weeklySubmitBtn").addEventListener("click", function () {
+        const calculations = calcWeeklyChange(getLatestWeekly(nest), weeklyEggsSelected, weeklyChicksSelected);
+
+        nest.currentEggs = weeklyEggsSelected;
+        nest.currentChicks = weeklyChicksSelected;
+
+        nest.history.push({
+          type: "weekly",
+          date: todayString(),
+          eggs: weeklyEggsSelected,
+          chicks: weeklyChicksSelected,
+          malePresent: nest.malePresent,
+          femalePresent: nest.femalePresent,
+          calculations
+        });
+
+        saveState();
+        vibrateShort();
+        showQuickConfirm("Weekly check saved");
+
+        document.getElementById("weeklyResultArea").innerHTML = `
+          <div class="alert green">
+            Nest ${nest.nestNumber} updated. Eggs now: ${nest.currentEggs}. Chicks now: ${nest.currentChicks}.
+          </div>
+          <div class="report-box">
+            <div class="report-title">Short Report</div>
+            <div class="report-grid">
+              <div class="report-item"><div class="label">Eggs Stayed</div><div class="value">${calculations.eggsStayed}</div></div>
+              <div class="report-item"><div class="label">Eggs Hatched</div><div class="value">${calculations.eggsHatched}</div></div>
+              <div class="report-item"><div class="label">Eggs Lost</div><div class="value">${calculations.eggsLost}</div></div>
+              <div class="report-item"><div class="label">New Eggs</div><div class="value">${calculations.newEggsAdded}</div></div>
+              <div class="report-item"><div class="label">Current Eggs</div><div class="value">${nest.currentEggs}</div></div>
+              <div class="report-item"><div class="label">Current Chicks</div><div class="value">${nest.currentChicks}</div></div>
+            </div>
+            <div class="btn-row">
+              <button class="btn secondary" id="weeklyNextNestBtn">Next Nest</button>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("weeklyNextNestBtn").addEventListener("click", function () {
+          renderAll();
+          setPage("Weekly Check", "weekly");
+        });
+      });
+    }
+
+    function renderTakeout() {
+      const takeout = document.getElementById("takeout");
+      takeout.innerHTML = `
+        <div class="card">
+          ${makeSectionTitle("Enter Nest Number", "Número de nido")}
+          <div class="field" style="margin-top:12px;">
+            <input id="takeoutNestNumber" class="big-input" inputmode="numeric" placeholder="Type nest number">
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="takeoutEnterBtn">Enter</button>
+          </div>
+        </div>
+
+        <div id="takeoutLoadedArea"></div>
+      `;
+
+      const input = document.getElementById("takeoutNestNumber");
+      input.focus();
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") loadTakeoutNest();
+      });
+      document.getElementById("takeoutEnterBtn").addEventListener("click", loadTakeoutNest);
+    }
+
+    function loadTakeoutNest() {
+      const nestNumber = document.getElementById("takeoutNestNumber").value.trim();
+      if (!nestNumber) return alert("Enter a nest number.");
+
+      const nest = getNestByNumber(nestNumber);
+      const area = document.getElementById("takeoutLoadedArea");
+
+      if (!nest) {
+        area.innerHTML = `<div class="card"><div class="alert red">Nest not found.</div></div>`;
+        return;
+      }
+
+      takeoutSelected = 0;
+
+      area.innerHTML = `
+        <div class="card">
+          ${nestTopReport(nest, "If a mistake is found here, go to Edit Nest.")}
+          <div class="report-box">
+            <div class="report-title">Take Out</div>
+            <div class="field">
+              <label>${labelHtml("How many are you taking out?", "¿Cuántos va a sacar?")}</label>
+              <div id="takeoutGrid" class="number-grid"></div>
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="takeoutSubmitBtn">Submit</button>
+            </div>
+          </div>
+          <div id="takeoutResultArea"></div>
+        </div>
+      `;
+
+      const redraw = () => {
+        buildNumberGrid("takeoutGrid", takeoutSelected, function (value) {
+          takeoutSelected = value;
+          redraw();
+        }, n(nest.currentChicks));
+      };
+
+      redraw();
+
+      document.getElementById("takeoutSubmitBtn").addEventListener("click", function () {
+        if (takeoutSelected > nest.currentChicks) {
+          alert("You cannot take out more chicks than are present.");
+          return;
+        }
+
+        const before = nest.currentChicks;
+        const after = before - takeoutSelected;
+
+        nest.currentChicks = after;
+        nest.totalTakenOut = n(nest.totalTakenOut) + takeoutSelected;
+
+        nest.history.push({
+          type: "takeout",
+          date: todayString(),
+          beforeChicks: before,
+          takenOut: takeoutSelected,
+          afterChicks: after,
+          note: ""
+        });
+
+        saveState();
+        vibrateShort();
+        showQuickConfirm("Take out saved");
+
+        document.getElementById("takeoutResultArea").innerHTML = `
+          <div class="alert green">
+            Nest ${nest.nestNumber} updated. Taken out: ${takeoutSelected}. Chicks remaining: ${after}.
+          </div>
+          ${isPurple(nest) ? `<div class="alert purple">This nest is purple because the last 3 take-out events were 3 or lower.</div>` : ``}
+          <div class="report-box">
+            <div class="report-title">Short Report</div>
+            <div class="report-grid">
+              <div class="report-item"><div class="label">Before</div><div class="value">${before}</div></div>
+              <div class="report-item"><div class="label">Taken Out</div><div class="value">${takeoutSelected}</div></div>
+              <div class="report-item"><div class="label">Remaining</div><div class="value">${after}</div></div>
+              <div class="report-item"><div class="label">Avg Weekly Production</div><div class="value">${getAvgWeeklyProduction(nest).toFixed(2)}</div></div>
+            </div>
+            <div class="btn-row">
+              <button class="btn secondary" id="takeoutNextNestBtn">Next Nest</button>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("takeoutNextNestBtn").addEventListener("click", function () {
+          renderAll();
+          setPage("Take Out", "takeout");
+        });
+      });
+    }
+
+    function renderNestInfo() {
+      const nestinfo = document.getElementById("nestinfo");
+      nestinfo.innerHTML = `
+        <div class="card">
+          ${makeSectionTitle("Enter Nest Number", "Número de nido")}
+          <div class="field" style="margin-top:12px;">
+            <input id="infoNestNumber" class="big-input" inputmode="numeric" placeholder="Type nest number">
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="infoEnterBtn">Enter</button>
+          </div>
+        </div>
+        <div id="infoLoadedArea"></div>
+      `;
+
+      const input = document.getElementById("infoNestNumber");
+      input.focus();
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") loadNestInfo();
+      });
+      document.getElementById("infoEnterBtn").addEventListener("click", loadNestInfo);
+    }
+
+    function loadNestInfo() {
+      const nestNumber = document.getElementById("infoNestNumber").value.trim();
+      if (!nestNumber) return alert("Enter a nest number.");
+
+      const nest = getNestByNumber(nestNumber);
+      const area = document.getElementById("infoLoadedArea");
+
+      if (!nest) {
+        area.innerHTML = `<div class="card"><div class="alert red">Nest not found.</div></div>`;
+        return;
+      }
+
+      const takeouts = getTakeoutEvents(nest);
+      const weekly = getWeeklyEvents(nest);
+
+      const lastWeek = takeouts.slice(-1).reduce((s,x)=>s+n(x.takenOut),0);
+      const currentMonth = todayString().slice(0,7);
+      const currentYear = todayString().slice(0,4);
+      const monthTotal = takeouts.filter(x => x.date.slice(0,7) === currentMonth).reduce((s,x)=>s+n(x.takenOut),0);
+      const yearTotal = takeouts.filter(x => x.date.slice(0,4) === currentYear).reduce((s,x)=>s+n(x.takenOut),0);
+
+      const history = nest.history.slice().sort((a,b) => b.date.localeCompare(a.date));
+
+      area.innerHTML = `
+        <div class="card">
+          ${nestTopReport(nest, "")}
+          <div class="report-box">
+            <div class="report-title">Nest Totals and Averages</div>
+            <div class="report-grid">
+              <div class="report-item"><div class="label">Average Weekly</div><div class="value">${getAvgWeeklyProduction(nest).toFixed(2)}</div></div>
+              <div class="report-item"><div class="label">Average Monthly</div><div class="value">${getMonthlyAverage(nest).toFixed(2)}</div></div>
+              <div class="report-item"><div class="label">Average Yearly</div><div class="value">${getYearlyAverage(nest).toFixed(2)}</div></div>
+              <div class="report-item"><div class="label">Total Product All Time</div><div class="value">${nest.totalTakenOut}</div></div>
+              <div class="report-item"><div class="label">Total Last Week</div><div class="value">${lastWeek}</div></div>
+              <div class="report-item"><div class="label">Total This Month</div><div class="value">${monthTotal}</div></div>
+              <div class="report-item"><div class="label">Total This Year</div><div class="value">${yearTotal}</div></div>
+              <div class="report-item"><div class="label">Weekly Checks</div><div class="value">${weekly.length}</div></div>
+            </div>
+          </div>
+
+          <div class="report-box">
+            <div class="report-title">History</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${history.length ? history.map(item => `
+                  <tr>
+                    <td>${item.date}</td>
+                    <td>${item.type}</td>
+                    <td>
+                      ${item.type === "weekly"
+                        ? `Eggs: ${item.eggs}, Chicks: ${item.chicks}, Hatched: ${n(item.calculations && item.calculations.eggsHatched)}, Eggs lost: ${n(item.calculations && item.calculations.eggsLost)}`
+                        : `Before: ${item.beforeChicks}, Taken out: ${item.takenOut}, After: ${item.afterChicks}`
+                      }
+                    </td>
+                  </tr>
+                `).join("") : `<tr><td colspan="3">No history.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderNewNest() {
+      const newnest = document.getElementById("newnest");
+      newnest.innerHTML = `
+        <div class="card">
+          ${makeSectionTitle("New Nest", "Nuevo nido")}
+          <div class="row" style="margin-top:12px;">
+            <div class="field">
+              <label>${labelHtml("Nest Number", "Número de nido")}</label>
+              <input id="newNestNumber" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label>${labelHtml("Date of Pairing", "Fecha de emparejamiento")}</label>
+              <input id="newDatePaired" type="date">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>${labelHtml("Male ID", "ID del macho")}</label>
+              <input id="newMaleId">
+            </div>
+            <div class="field">
+              <label>${labelHtml("Female ID", "ID de la hembra")}</label>
+              <input id="newFemaleId">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>${labelHtml("Male Present?", "¿Macho presente?")}</label>
+              <select id="newMalePresent">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>${labelHtml("Female Present?", "¿Hembra presente?")}</label>
+              <select id="newFemalePresent">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn" id="newNestSaveBtn">Save New Nest</button>
+          </div>
+
+          <div id="newNestMessage"></div>
+        </div>
+      `;
+
+      document.getElementById("newDatePaired").value = todayString();
+
+      document.getElementById("newNestSaveBtn").addEventListener("click", function () {
+        const nestNumber = document.getElementById("newNestNumber").value.trim();
+        if (!nestNumber) return alert("Enter a nest number.");
+        if (getNestByNumber(nestNumber)) return alert("Nest already exists.");
+
+        const nest = {
+          nestNumber,
+          datePaired: document.getElementById("newDatePaired").value,
+          maleId: document.getElementById("newMaleId").value.trim(),
+          femaleId: document.getElementById("newFemaleId").value.trim(),
+          malePresent: document.getElementById("newMalePresent").value === "yes",
+          femalePresent: document.getElementById("newFemalePresent").value === "yes",
+          currentEggs: 0,
+          currentChicks: 0,
+          totalTakenOut: 0,
+          overrideKeep: false,
+          history: []
+        };
+
+        state.nests.push(nest);
+        state.nests.sort(sortByNest);
+        saveState();
+        vibrateShort();
+        showQuickConfirm("New nest saved");
+        document.getElementById("newNestMessage").innerHTML = `<div class="alert green">Nest ${nestNumber} created.</div>`;
+      });
+    }
+
+    function renderEditNest() {
+      const editnest = document.getElementById("editnest");
+      editnest.innerHTML = `
+        <div class="card">
+          ${makeSectionTitle("Enter Nest Number", "Número de nido")}
+          <div class="field" style="margin-top:12px;">
+            <input id="editNestNumber" class="big-input" inputmode="numeric" placeholder="Type nest number">
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="editEnterBtn">Enter</button>
+          </div>
+        </div>
+        <div id="editLoadedArea"></div>
+      `;
+
+      const input = document.getElementById("editNestNumber");
+      input.focus();
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") loadEditNest();
+      });
+      document.getElementById("editEnterBtn").addEventListener("click", loadEditNest);
+    }
+
+    function loadEditNest() {
+      const nestNumber = document.getElementById("editNestNumber").value.trim();
+      if (!nestNumber) return alert("Enter a nest number.");
+      const nest = getNestByNumber(nestNumber);
+      const area = document.getElementById("editLoadedArea");
+
+      if (!nest) {
+        area.innerHTML = `<div class="card"><div class="alert red">Nest not found.</div></div>`;
+        return;
+      }
+
+      area.innerHTML = `
+        <div class="card">
+          ${nestTopReport(nest, "Be careful. Changes require double confirmation.")}
+          <div class="report-box">
+            <div class="report-title">Edit Nest</div>
+
+            <div class="row">
+              <div class="field">
+                <label>${labelHtml("Date of Pairing", "Fecha de emparejamiento")}</label>
+                <input id="editDatePaired" type="date" value="${nest.datePaired || ""}">
+              </div>
+              <div class="field">
+                <label>${labelHtml("Nest Number", "Número de nido")}</label>
+                <input id="editNestNumber2" value="${nest.nestNumber}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>${labelHtml("Male ID", "ID del macho")}</label>
+                <input id="editMaleId" value="${nest.maleId || ""}">
+              </div>
+              <div class="field">
+                <label>${labelHtml("Female ID", "ID de la hembra")}</label>
+                <input id="editFemaleId" value="${nest.femaleId || ""}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>${labelHtml("Male Present?", "¿Macho presente?")}</label>
+                <select id="editMalePresent">
+                  <option value="yes" ${nest.malePresent ? "selected" : ""}>Yes</option>
+                  <option value="no" ${!nest.malePresent ? "selected" : ""}>No</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>${labelHtml("Female Present?", "¿Hembra presente?")}</label>
+                <select id="editFemalePresent">
+                  <option value="yes" ${nest.femalePresent ? "selected" : ""}>Yes</option>
+                  <option value="no" ${!nest.femalePresent ? "selected" : ""}>No</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn red" id="editChangeBtn">Change</button>
+            </div>
+          </div>
+
+          <div id="editConfirmArea"></div>
+        </div>
+      `;
+
+      document.getElementById("editChangeBtn").addEventListener("click", function () {
+        const draft = {
+          oldNestNumber: nest.nestNumber,
+          nestNumber: document.getElementById("editNestNumber2").value.trim(),
+          datePaired: document.getElementById("editDatePaired").value,
+          maleId: document.getElementById("editMaleId").value.trim(),
+          femaleId: document.getElementById("editFemaleId").value.trim(),
+          malePresent: document.getElementById("editMalePresent").value === "yes",
+          femalePresent: document.getElementById("editFemalePresent").value === "yes"
+        };
+
+        document.getElementById("editConfirmArea").innerHTML = `
+          <div class="report-box">
+            <div class="report-title">Final Report of Changes</div>
+            <div class="report-grid">
+              <div class="report-item"><div class="label">Nest Number</div><div class="value">${nest.nestNumber} → ${draft.nestNumber}</div></div>
+              <div class="report-item"><div class="label">Date of Pairing</div><div class="value">${nest.datePaired || "-"} → ${draft.datePaired || "-"}</div></div>
+              <div class="report-item"><div class="label">Male ID</div><div class="value">${nest.maleId || "-"} → ${draft.maleId || "-"}</div></div>
+              <div class="report-item"><div class="label">Female ID</div><div class="value">${nest.femaleId || "-"} → ${draft.femaleId || "-"}</div></div>
+              <div class="report-item"><div class="label">Male Present</div><div class="value">${nest.malePresent ? "Yes" : "No"} → ${draft.malePresent ? "Yes" : "No"}</div></div>
+              <div class="report-item"><div class="label">Female Present</div><div class="value">${nest.femalePresent ? "Yes" : "No"} → ${draft.femalePresent ? "Yes" : "No"}</div></div>
+            </div>
+            <div class="btn-row">
+              <button class="btn red" id="editConfirmBtn">Confirm</button>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("editConfirmBtn").addEventListener("click", function () {
+          const finalAgree = confirm("Are you sure? Click OK only if you agree to permanently change this nest.");
+          if (!finalAgree) return;
+
+          nest.nestNumber = draft.nestNumber;
+          nest.datePaired = draft.datePaired;
+          nest.maleId = draft.maleId;
+          nest.femaleId = draft.femaleId;
+          nest.malePresent = draft.malePresent;
+          nest.femalePresent = draft.femalePresent;
+
+          state.nests.sort(sortByNest);
+          saveState();
+          vibrateShort();
+          showQuickConfirm("Nest changed");
+          document.getElementById("editConfirmArea").innerHTML += `<div class="alert green">Changes saved.</div>`;
+        });
+      });
+    }
+
+    function renderAll() {
+      renderHome();
+      renderWeekly();
+      renderTakeout();
+      renderNestInfo();
+      renderNewNest();
+      renderEditNest();
+      saveState();
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", function () {
+        const screen = tab.getAttribute("data-screen");
+        const titles = {
+          home: "Home",
+          weekly: "Weekly Check",
+          takeout: "Take Out",
+          nestinfo: "Nest Info",
+          newnest: "New Nest",
+          editnest: "Edit Nest"
+        };
+        setPage(titles[screen], screen);
+      });
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
