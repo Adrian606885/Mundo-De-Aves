@@ -131,12 +131,6 @@
       gap:12px;
     }
 
-    .row-3 {
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:12px;
-    }
-
     .field { margin-bottom:12px; }
 
     label {
@@ -205,11 +199,6 @@
       color:white;
     }
 
-    .btn.home {
-      background:var(--home);
-      color:white;
-    }
-
     .btn-row {
       display:flex;
       flex-wrap:wrap;
@@ -245,22 +234,6 @@
       color:#9ca3af;
       cursor:not-allowed;
     }
-
-    .pill {
-      display:inline-block;
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      margin-right:6px;
-      margin-bottom:6px;
-    }
-
-    .pill.green { background:var(--green-bg); color:var(--green); }
-    .pill.red { background:var(--red-bg); color:var(--red); }
-    .pill.purple { background:var(--purple-bg); color:var(--purple); }
-    .pill.yellow { background:var(--yellow-bg); color:var(--yellow); }
-    .pill.gray { background:var(--gray-bg); color:#475569; }
 
     .alert {
       padding:12px 14px;
@@ -339,63 +312,6 @@
       word-break: break-word;
     }
 
-    .nest {
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-      margin-bottom:12px;
-      background:white;
-    }
-
-    .nest.red {
-      border:2px solid var(--red);
-      background:#fff6f6;
-    }
-
-    .nest.purple {
-      border:2px solid var(--purple);
-      background:#faf5ff;
-    }
-
-    .nest-head {
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      margin-bottom:8px;
-    }
-
-    .nest-title {
-      font-size:22px;
-      font-weight:900;
-    }
-
-    .metrics {
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .metric {
-      background:#f8fafc;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-    }
-
-    .metric .label {
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      margin-bottom:4px;
-    }
-
-    .metric .value {
-      font-size:24px;
-      font-weight:900;
-    }
-
     .summary-mode {
       display:flex;
       gap:10px;
@@ -453,7 +369,7 @@
     }
 
     @media (max-width: 760px) {
-      .row, .row-3, .kpis, .metrics, .report-grid { grid-template-columns:1fr; }
+      .row, .kpis, .report-grid { grid-template-columns:1fr; }
       .number-grid { grid-template-columns: repeat(4, 1fr); }
     }
   </style>
@@ -592,7 +508,6 @@
     };
 
     let state = loadState();
-
     let weeklyEggsSelected = 0;
     let weeklyChicksSelected = 0;
     let takeoutSelected = 0;
@@ -621,10 +536,6 @@
 
     function todayString() {
       return new Date().toISOString().slice(0, 10);
-    }
-
-    function sortByNest(a, b) {
-      return a.nestNumber.localeCompare(b.nestNumber, undefined, { numeric: true });
     }
 
     function getNestByNumber(nestNumber) {
@@ -681,35 +592,10 @@
       return last3.length === 3 && last3.every(x => n(x.takenOut) < 5);
     }
 
-    function getStatus(nest) {
-      if (isRed(nest)) return "red";
-      if (isPurple(nest)) return "purple";
-      return "green";
-    }
-
-    function totalEggsNow() {
-      return state.nests.reduce((sum, nest) => sum + n(nest.currentEggs), 0);
-    }
-
-    function totalChicksNow() {
-      return state.nests.reduce((sum, nest) => sum + n(nest.currentChicks), 0);
-    }
-
-    function totalTakenOutAll() {
-      return state.nests.reduce((sum, nest) => sum + n(nest.totalTakenOut), 0);
-    }
-
-    function totalRedNests() {
-      return state.nests.filter(isRed).length;
-    }
-
-    function totalPurpleNests() {
-      return state.nests.filter(isPurple).length;
-    }
-
     function overallAvgWeekly() {
       const weeks = state.nests.reduce((sum, nest) => sum + getWeeksActive(nest), 0) || 1;
-      return totalTakenOutAll() / weeks;
+      const total = state.nests.reduce((sum, nest) => sum + n(nest.totalTakenOut), 0);
+      return total / weeks;
     }
 
     function totalForMode(mode) {
@@ -757,13 +643,7 @@
       const newEggsAdded = Math.max(0, newEggs - eggsStayed);
       const chicksLost = Math.max(0, prevChicks - newChicks);
 
-      return {
-        eggsStayed,
-        eggsHatched,
-        eggsLost,
-        newEggsAdded,
-        chicksLost
-      };
+      return { eggsStayed, eggsHatched, eggsLost, newEggsAdded, chicksLost };
     }
 
     function buildNumberGrid(containerId, selectedValue, clickHandler, maxEnabled) {
@@ -797,9 +677,7 @@
       const el = document.getElementById("quickConfirm");
       el.textContent = text;
       el.classList.add("show");
-      setTimeout(() => {
-        el.classList.remove("show");
-      }, 500);
+      setTimeout(() => el.classList.remove("show"), 500);
     }
 
     function setPage(title, screenId) {
@@ -849,13 +727,11 @@
       home.innerHTML = `
         <div class="card">
           ${makeSectionTitle("Barn Summary", "Resumen del galpón")}
-
           <div class="summary-mode" style="margin-top:12px;">
             <button class="mode-btn ${mode === "weekly" ? "active" : ""}" data-mode="weekly">Weekly</button>
             <button class="mode-btn ${mode === "monthly" ? "active" : ""}" data-mode="monthly">Monthly</button>
             <button class="mode-btn ${mode === "yearly" ? "active" : ""}" data-mode="yearly">Yearly</button>
           </div>
-
           <div class="kpis" style="margin-top:14px;">
             <div class="kpi">
               <div class="label">Average Production of Nest</div>
@@ -920,7 +796,6 @@
             <button class="btn" id="weeklyEnterBtn">Enter</button>
           </div>
         </div>
-
         <div id="weeklyLoadedArea"></div>
       `;
 
@@ -952,17 +827,14 @@
           ${nestTopReport(nest, "If a mistake is found here, go to Edit Nest.")}
           <div class="report-box">
             <div class="report-title">Weekly Fill Out</div>
-
             <div class="field">
               <label>${labelHtml("Eggs", "Huevos")}</label>
               <div id="weeklyEggsGrid" class="number-grid"></div>
             </div>
-
             <div class="field">
               <label>${labelHtml("Chicks", "Pollitos")}</label>
               <div id="weeklyChicksGrid" class="number-grid"></div>
             </div>
-
             <div class="btn-row">
               <button class="btn" id="weeklySubmitBtn">Submit</button>
             </div>
@@ -1044,7 +916,6 @@
             <button class="btn" id="takeoutEnterBtn">Enter</button>
           </div>
         </div>
-
         <div id="takeoutLoadedArea"></div>
       `;
 
@@ -1184,13 +1055,11 @@
 
       const takeouts = getTakeoutEvents(nest);
       const weekly = getWeeklyEvents(nest);
-
       const lastWeek = takeouts.slice(-1).reduce((s,x)=>s+n(x.takenOut),0);
       const currentMonth = todayString().slice(0,7);
       const currentYear = todayString().slice(0,4);
       const monthTotal = takeouts.filter(x => x.date.slice(0,7) === currentMonth).reduce((s,x)=>s+n(x.takenOut),0);
       const yearTotal = takeouts.filter(x => x.date.slice(0,4) === currentYear).reduce((s,x)=>s+n(x.takenOut),0);
-
       const history = nest.history.slice().sort((a,b) => b.date.localeCompare(a.date));
 
       area.innerHTML = `
@@ -1314,7 +1183,7 @@
         };
 
         state.nests.push(nest);
-        state.nests.sort(sortByNest);
+        state.nests.sort((a, b) => a.nestNumber.localeCompare(b.nestNumber, undefined, { numeric: true }));
         saveState();
         vibrateShort();
         showQuickConfirm("New nest saved");
@@ -1412,7 +1281,6 @@
 
       document.getElementById("editChangeBtn").addEventListener("click", function () {
         const draft = {
-          oldNestNumber: nest.nestNumber,
           nestNumber: document.getElementById("editNestNumber2").value.trim(),
           datePaired: document.getElementById("editDatePaired").value,
           maleId: document.getElementById("editMaleId").value.trim(),
@@ -1449,7 +1317,7 @@
           nest.malePresent = draft.malePresent;
           nest.femalePresent = draft.femalePresent;
 
-          state.nests.sort(sortByNest);
+          state.nests.sort((a, b) => a.nestNumber.localeCompare(b.nestNumber, undefined, { numeric: true }));
           saveState();
           vibrateShort();
           showQuickConfirm("Nest changed");
